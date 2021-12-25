@@ -1,0 +1,105 @@
+﻿@model poligonotiro.Models.ViewModels.ListaUsuarios
+
+@{
+    ViewBag.Title = "Recuperación de Contraseña";
+}
+
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/icon-font.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/main1.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/util.css">
+</head>
+
+<body style="background: url(/Content/images/pol1.jpg); background-size: cover; background-position: center;">
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-form-title" style="background-image: url(/Content/images/apuntando.jpg);">
+                    <span class="login100-form-title-1">
+
+                    </span>
+
+                </div>
+
+
+                @{
+                    if (!string.IsNullOrEmpty(ViewBag.Message))
+                    {
+                        //Message tiene un valor
+                        <div class="alert alert-danger">@ViewBag.Message</div>
+                    }
+
+                    if (!string.IsNullOrEmpty(ViewBag.Message1))
+                    {
+                        //Message tiene un valor
+                        <div class="alert alert-success">@ViewBag.Message1</div>
+                    }
+                    if (!string.IsNullOrEmpty(ViewBag.Error))
+                    {
+                        //Message tiene un valor
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+                }
+
+                <form id='login' action="~/Home/Recuperacioncon" method="post" class="login100-form validate-form">
+                    <div class="wrap-input100 validate-input m-b-26">
+                        <span class="label-input100">
+                            <span class="symbol-input100">
+                                <i class="fa"></i>
+                            </span>
+                        </span>
+
+                        @Html.HiddenFor(d => d.token)
+
+
+
+                        <label>Escribe tu nueva contraseña:</label>
+
+                        @Html.PasswordFor(d => d.Password1, new { placeholder = "Ingrese contraseña", @class = "input100" })
+                        @Html.ValidationMessageFor(d => d.Password1, null, new { style = "color:red;" })
+
+
+                        <span class="focus-input100"></span>
+                    </div>
+
+
+
+                    <div class="wrap-input100 validate-input m-b-18" data-validate="Contraseña es requerida">
+                        <span class="label-input100">
+                            <span class="symbol-input100">
+                                <i class="fa"></i>
+                            </span>
+                        </span>
+                        <label>Vuelve a escribir la contraseña:</label>
+                        @Html.PasswordFor(d => d.passwordconfirm, new { placeholder = "Repita contraseña", @class = "input100" })
+                        @Html.ValidationMessageFor(d => d.passwordconfirm, null, new { style = "color:red;" })
+                    </div>
+
+
+                    <div class="col col-md-10">
+                        <center>
+                            <button type="submit" class="login100-form-btn">
+                                Recuperar
+                            </button>
+                        </center>
+                    </div>
+
+
+
+                </form>
+
+                <p>Copyright &copy; 2020. Polígono de tiro. Todos los derechos reservados. &middot;</p>
+            </div>
+        </div>
+    </div>
+</body>

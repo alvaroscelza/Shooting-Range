@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Polígono de Tiro", "Index", "Profile", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+
+
+                        @if (Session["IDROL"] == null)
+                        {
+                            FormsAuthentication.SignOut();
+                            Response.Redirect("~/");
+                        }
+                        else
+                        {
+                            if ((int)Session["IDROL"] == 1)
+                            {
+                                <li>@Html.ActionLink("Armas", "", "Armas")</li>
+                                <li>@Html.ActionLink("Clientes", "", "Clientes")</li>
+                                <li>@Html.ActionLink("Lineas de tiro", "", "LineaTiro")</li>
+                                <li>@Html.ActionLink("Reservas Web", "", "Reservas")</li>
+                                <li>@Html.ActionLink("Temporizador de línea", "", "Temporizador")</li>
+                                <li>@Html.ActionLink("Supervisores", "", "Supervisores")</li>
+                                <li>@Html.ActionLink("Usuarios", "", "Usuarios")</li>
+                                <li href="" data-toggle="modal" data-target="#parametrosdia"><a href="#">Reportes</a></li>
+
+                                
+
+                                <!--<li>@Html.ActionLink("Roles", "", "Rol")</li>-->
+
+                                <li><a href="/Home/Logout">Cerrar Sesión</a></li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("Reservas Web", "", "ReservasUsuario")</li>
+                                <li><a href="/Home/Logout">Cerrar Sesión</a></li>
+                            }
+
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <div class="modal fade" id="parametrosdia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ingrese fechas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Index", "Reportedia", FormMethod.Get))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Inicio:</label>
+                                    <input type="date" name="fechaini" class="form-control" placeholder="Fecha ini">
+                                </div>
+                                <br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Fin:</label>
+                                    <input type="date" name="fechafin" class="form-control" placeholder="Fecha fin">
+                                </div>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" value="Aceptar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="parametrosemana" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ingrese fechas de la semana</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Index", "Reportesemana", FormMethod.Get))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Inicio:</label>
+                                    <input type="date" name="fechaini" class="form-control" placeholder="Fecha ini">
+                                </div>
+                                <br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Fin:</label>
+                                    <input type="date" name="fechafin" class="form-control" placeholder="Fecha fin">
+                                </div>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" value="Aceptar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="parametromes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ingrese fechas del mes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Index", "Reportemes", FormMethod.Get))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Inicio:</label>
+                                    <input type="date" name="fechaini" class="form-control" placeholder="Fecha ini">
+                                </div>
+                                <br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha Fin:</label>
+                                    <input type="date" name="fechafin" class="form-control" placeholder="Fecha fin">
+                                </div>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" value="Aceptar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <br /><br />
+    <div class="container body-content">
+        @RenderBody()
+        <!--<hr />-->
+        <footer>
+            <p>&copy; @DateTime.Now.Year - SkollARS Software Development</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
+

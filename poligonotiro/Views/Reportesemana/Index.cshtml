@@ -1,0 +1,119 @@
+﻿@model List<poligonotiro.Models.ViewModels.Listareservaweb>
+
+@{
+    ViewBag.Title = "Horas alquiladas por semana";
+    List<SelectListItem> items = (List<SelectListItem>)ViewBag.items;
+}
+
+<script src="~/Content/jquery-2.1.4.min.js"></script>
+<script src="~/Content/jspdf.debug.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+
+<body style="background: url(/Content/images/pol1.jpg); background-size: cover; background-position: center;">
+    <h2>@ViewBag.Title</h2>
+
+    <h4>Del @ViewData["fechaini"] al @ViewData["fechafin"]</h4>
+
+    <br /><br />
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="reporte">
+                <table class="table table-striped" id="myTable" width="100%" border="3" cellspacing="10" cellpadding="10" style="background: white;">
+                    <tr>
+                        <th width="5%">No. Reserva</th>
+                        <th width="20%">Usuario</th>
+                        <th width="8%">Fecha</th>
+
+                        <th width="10%">Cantidad minutos</th>
+
+                        <th width="10%">Costo</th>
+                        <th width="14%">Línea de Tiro</th>
+
+                    </tr>
+                    @{ int totalmin = 0;
+                        int totalhoras = 0;
+                    }
+
+                    @foreach (var oElemento in Model)
+                    {
+                        <tr>
+                            <td width="5%">@oElemento.Id </td>
+                            <td width="20%">@oElemento.nombreusuario</td>
+                            <td width="8%">@oElemento.fecha.ToString("dd/MM/yyyy")</td>
+
+                            <td width="10%">@oElemento.cantidadminutos</td>
+
+                            <td width="10%">@oElemento.costo</td>
+                            <td width="14%">@oElemento.nombrelinea</td>
+                        </tr>
+                        totalmin = totalmin + @oElemento.cantidadminutos;
+                        totalhoras = totalmin / 60;
+                    }
+
+                    <tr>
+                        <td colspan="3" align="right"><h4>Minutos</h4></td>
+                        <td align="right"><h4>@totalmin</h4></td>
+                        <td align="right"><h3></h3></td>
+                        <td align="right"><h3></h3></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3" align="right"><h4>Horas</h4></td>
+                        <td align="right"><h4>@totalhoras</h4></td>
+                        <td align="right"><h3></h3></td>
+                        <td align="right"><h3></h3></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+
+<script>
+    function DescargarPDF(ContenidoID, nombre) {
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        html = $('#' + ContenidoID).html();
+        specialElementHandlers = {};
+        margins = { top: 10, bottom: 20, left: 20, width: 722 };
+        pdf.fromHTML(html, margins.left, margins.top, { 'width': margins.width }, function (dispose) { pdf.save(nombre + '.pdf'); }, margins);
+    }
+
+
+
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, j, visible;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            visible = false;
+            /* Obtenemos todas las celdas de la fila, no sólo la primera */
+            td = tr[i].getElementsByTagName("td");
+            for (j = 0; j < td.length; j++) {
+                if (td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    visible = true;
+                }
+            }
+            if (visible === true) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+
+
+</script>

@@ -1,0 +1,1269 @@
+@model List<poligonotiro.Models.ViewModels.Listareservaweb>
+
+@{
+    ViewBag.Title = "Reservas Web";
+    List<SelectListItem> items = (List<SelectListItem>)ViewBag.items;
+
+    List<SelectListItem> items1 = (List<SelectListItem>)ViewBag.items1;
+}
+<body style="background: url(/Content/images/pol1.jpg); background-size: cover; background-position: center;">
+    <h2>@ViewBag.Title</h2>
+
+    <div class="row" style="text-align:right;padding:5px;">
+        <a href="#" data-toggle="modal" data-target="#agregarreserva" class="btn btn-primary" onclick="set()">Nuevo</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped" width="100%" border="3" cellspacing="10" cellpadding="10" style="background: white;">
+                <tr>
+                    <th width="5%">No. Reserva</th>
+                    <th width="20%">Usuario</th>
+                    <th width="8%">Fecha</th>
+                    <th width="8%">Hora Inicio</th>
+                    <th width="10%">Cantidad minutos</th>
+                    <th width="8%">Hora Fin</th>
+                    <th width="10%">Costo</th>
+                    <th width="14%">Línea de Tiro</th>
+                    <th width="15%" style="text-align: center;">Acciones</th>
+                </tr>
+                @foreach (var oElemento in Model)
+                {
+                    <tr>
+                        <td width="5%">@oElemento.Id </td>
+                        <td width="20%">@oElemento.nombreusuario</td>
+                        <td width="8%">@oElemento.fecha.ToString("dd/MM/yyyy")</td>
+                        <td width="8%">@oElemento.horainicio</td>
+                        <td width="10%">@oElemento.cantidadminutos</td>
+                        <td width="8%">@oElemento.horafin</td>
+                        <td width="10%">@oElemento.costo</td>
+                        <td width="14%">@oElemento.nombrelinea</td>
+                        <td width="15%" align="center">
+                            <a href="" data-toggle="modal" data-target="#editarreserva" class="btn btn-warning" onclick="editarreserva('@oElemento.Id','@oElemento.idusuario','@oElemento.fecha.ToString("dd/MM/yyyy")','@oElemento.horainicio','@oElemento.cantidadminutos','@oElemento.horafin','@oElemento.costo','@oElemento.idlineatiro','@oElemento.costopack')">Editar</a>
+                            <a href="" data-toggle="modal" data-target="#eliminarreserva" class="btn btn-danger" onclick="eliminarreserva('@oElemento.Id')">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        function editarreserva(id, usuario, fecha, horainicio, cantidadminutos, horafin, costo, idlineatiro, costopack) {
+            $('#idactualiza').val(id);
+            $('#idusuario').val(usuario);
+            $('#fecha').val(fecha.split("/").reverse().join("-"));
+            $('#horainicio').val(horainicio);
+            $('#cantidadminutos').val(cantidadminutos);
+            $('#horafin').val(horafin);
+            $('#costoid').val(costo);
+            $('#idlineatiroact').val(idlineatiro);
+            $('#costopack').val(costopack);
+
+            var horasiniciales = horainicio.substring(0, 2);
+            var minutosiniciales = horainicio.substring(3, 5);
+
+            $('#sumahorasiact').val(horasiniciales);
+            $('#sumaminutosiact').val(minutosiniciales);
+            
+    };
+
+        function eliminarreserva(id) {
+        $('#idelimina').val(id);
+        }
+
+        function set() {
+            var costopack = document.getElementById("costopa").value
+            costopack = parseFloat(costopack);
+            document.getElementById("costoadd").value = costopack 
+            document.getElementById("horafinadd").value = "01" + ":" + "00";
+
+            document.getElementById("horainicioadd").value = "01" + ":" + "00";
+
+            //alert(costopack);
+        }
+
+        var horai = 1;
+        var minutosi = 0;
+
+        function sumahora() {
+            if (horai > 22) {
+                horai = 1;
+            } else {
+                horai += 1;
+            }
+            
+            document.getElementById("sumahorasi").value = horai
+
+            var horai1;
+
+            if (horai < 10) {
+                horai1 = "0" + horai;
+            } else {
+                horai1 = horai;
+            }
+
+            document.getElementById("horainicioadd").value = horai1 + ":" + "00";
+
+            document.getElementById("horafinadd").value = horai1 + ":" + "15";
+            
+        }
+        
+        function restahora() {
+            if (horai < 2) {
+                horai = 23;
+            } else {
+                horai -= 1;
+            }
+            
+            document.getElementById("sumahorasi").value = horai
+
+            var horai1;
+
+            if (horai < 10) {
+                horai1 = "0" + horai;
+            } else {
+                horai1 = horai;
+            }
+
+            document.getElementById("horainicioadd").value = horai1 + ":" + "00";
+
+            document.getElementById("horafinadd").value = horai1 + ":" + "15";
+        }
+
+        function sumaminutos() {
+
+            if (minutosi > 43) {
+                minutosi = "0" + 0;
+            } else {
+
+                if (minutosi < 2) {
+                   minutosi = 0;
+                }
+                
+                
+                minutosi += 15;
+            }
+
+            
+            document.getElementById("sumaminutosi").value = minutosi
+
+            var horaactini;
+            var horaactfin;
+
+            horaactini = document.getElementById("horainicioadd").value.substring(0, 2);
+            horaactfin = 15 + minutosi;
+
+            if (minutosi == 00) {
+                horaactfin = "15";
+            }
+
+            if (horaactfin > 59) {
+                horaactfin = "00";
+            }
+
+            document.getElementById("horainicioadd").value = horaactini + ":" + minutosi;
+
+            document.getElementById("horafinadd").value = horaactini + ":" + horaactfin;
+        }
+
+        function restaminutos() {
+            if (minutosi < 2) {
+                minutosi = 45;
+            } else {
+                minutosi -= 15;
+
+                if (minutosi == 0) {
+                    minutosi = "0" + 0;
+                }
+            }
+            
+            document.getElementById("sumaminutosi").value = minutosi
+
+
+
+            var horaactini;
+            var horaactfin;
+
+            horaactini = document.getElementById("horainicioadd").value.substring(0, 2);
+            horaactfin = 15 + minutosi;
+
+            if (minutosi == 00) {
+                horaactfin = "15";
+            }
+
+            if (horaactfin > 59) {
+                horaactfin = "00";
+            }
+
+
+
+            document.getElementById("horainicioadd").value = horaactini + ":" + minutosi;
+
+            document.getElementById("horafinadd").value = horaactini + ":" + horaactfin;
+        }
+
+
+
+        //CALCULO ACTUALIZAR ----------------------------------------------------------------
+
+
+        function sumahoraact() {
+            var horai = parseInt(document.getElementById("sumahorasiact").value);
+            var mins = parseInt(document.getElementById("sumaminutosiact").value);
+            
+            document.getElementById("cantidadminutos").value = 15;
+            
+            document.getElementById("costoid").value = document.getElementById("costopack").value;
+            
+            if (horai > 22) {
+                horai = 1;
+            } else {
+                horai += 1;
+            }
+            
+            document.getElementById("sumahorasiact").value = horai
+
+            var horai1;
+
+            if (horai < 10) {
+                horai1 = "0" + horai;
+            } else {
+                horai1 = horai;
+            }
+
+            document.getElementById("horainicio").value = horai1 + ":" + mins;
+
+            document.getElementById("horafin").value = horai1 + ":" + "15";
+            
+        }
+
+        function restahoraact() {
+            var horai = parseInt(document.getElementById("sumahorasiact").value);
+            var mins = parseInt(document.getElementById("sumaminutosiact").value);
+
+            document.getElementById("cantidadminutos").value = 15;
+
+            document.getElementById("costoid").value = document.getElementById("costopack").value;
+            
+            if (horai < 2) {
+                horai = 23;
+            } else {
+                horai -= 1;
+            }
+
+            document.getElementById("sumahorasiact").value = horai
+
+            var horai1;
+
+            if (horai < 10) {
+                horai1 = "0" + horai;
+            } else {
+                horai1 = horai;
+            }
+
+            document.getElementById("horainicio").value = horai1 + ":" + mins;
+
+            document.getElementById("horafin").value = horai1 + ":" + "15";
+        }
+
+        function sumaminutosact() {
+            
+            var minutosi = parseInt(document.getElementById("sumaminutosiact").value);
+
+            document.getElementById("cantidadminutos").value = 15;
+
+            document.getElementById("costoid").value = document.getElementById("costopack").value;
+
+            if (minutosi > 43) {
+                minutosi = "0" + 0;
+            } else {
+
+                if (minutosi < 2) {
+                    minutosi = 0;
+                }
+
+
+                minutosi += 15;
+            }
+
+
+            document.getElementById("sumaminutosiact").value = minutosi
+
+            var horaactini;
+            var horaactfin;
+
+            horaactini = document.getElementById("horainicio").value.substring(0, 2);
+            horaactfin = 15 + minutosi;
+
+            if (minutosi == 00) {
+                horaactfin = "15";
+            }
+
+            if (horaactfin > 59) {
+                horaactfin = "00";
+            }
+
+            document.getElementById("horainicio").value = horaactini + ":" + minutosi;
+
+            document.getElementById("horafin").value = horaactini + ":" + horaactfin;
+        }
+
+        function restaminutosact() {
+            var minutosi = parseInt(document.getElementById("sumaminutosiact").value);
+
+            document.getElementById("cantidadminutos").value = 15;
+
+            document.getElementById("costoid").value = document.getElementById("costopack").value;
+
+            if (minutosi < 2) {
+                minutosi = 45;
+            } else {
+                minutosi -= 15;
+
+                if (minutosi == 0) {
+                    minutosi = "0" + 0;
+                }
+            }
+
+            document.getElementById("sumaminutosiact").value = minutosi
+
+
+
+            var horaactini;
+            var horaactfin;
+
+            horaactini = document.getElementById("horainicio").value.substring(0, 2);
+            horaactfin = 15 + minutosi;
+
+            if (minutosi == 00) {
+                horaactfin = "15";
+            }
+
+            if (horaactfin > 59) {
+                horaactfin = "00";
+            }
+
+
+
+            document.getElementById("horainicio").value = horaactini + ":" + minutosi;
+
+            document.getElementById("horafin").value = horaactini + ":" + horaactfin;
+        }
+
+
+
+
+
+        //MODAL DE AGREGAR ----------------------------------------------------------------
+
+        function total1() {
+            var horaini = document.getElementById("horainicioadd").value
+
+            var suma = parseInt(horaini.substring(3, 5)) + 15;
+            var hora = parseInt(horaini.substring(0, 2));
+
+            if (suma > 59) {
+                suma = "00";
+                hora = hora + 1;
+            }
+
+            ll = hora.toString();
+
+            if (ll.length < 2) {
+                hora = "0" + hora;
+            }
+
+            document.getElementById("horafinadd").value = hora + ":" + suma;
+
+            var costopack = document.getElementById("costopa").value
+            costopack = parseFloat(costopack);
+            document.getElementById("costoadd").value = costopack 
+
+        }
+
+
+
+        var cant = 15;
+
+        function suma() {
+
+            cant += 15;
+            document.getElementById("cantidadminutosadd").value = cant
+            //total()
+
+
+            //----------------------------------------------------------------------
+
+            var costopack = parseFloat(document.getElementById("costoadd").value);
+
+            c1 = parseFloat(document.getElementById("costopa").value);
+            costopack = costopack + c1;
+            document.getElementById("costoadd").value = costopack;
+
+            //----------------------------------------------------------------------
+
+
+            inicio = document.getElementById("horainicioadd").value;
+            fin = document.getElementById("horafinadd").value;
+
+            iniciohoras = parseInt(inicio.substring(0, 2));
+            iniciominutos = parseInt(inicio.substring(3, 5));
+
+            finhoras = parseInt(fin.substring(0, 2));
+            finminutos = parseInt(fin.substring(3, 2));
+
+
+
+            transcurridohoras = iniciohoras;
+            transcurridominutos = cant;
+            //alert(transcurridominutos);
+
+            if (iniciominutos > 0) {
+                transcurridominutos = cant + iniciominutos;
+            } else {
+                transcurridominutos = cant;
+            }
+
+
+            if (transcurridominutos > 59 && transcurridominutos < 120) {
+                transcurridohoras += 1;
+
+                if (transcurridominutos > 74 && transcurridominutos < 90) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 89 && transcurridominutos < 105) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 104 && transcurridominutos < 120) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 59 && cant < 120) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+
+
+            } else if (transcurridominutos > 119 && transcurridominutos < 180) {
+                transcurridohoras += 2;
+
+                if (transcurridominutos > 134 && transcurridominutos < 150) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 149 && transcurridominutos < 165) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 164 && transcurridominutos < 180) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 119 && cant < 180) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+            } else if (transcurridominutos > 179 && transcurridominutos < 240) {
+                transcurridohoras += 3;
+
+                if (transcurridominutos > 194 && transcurridominutos < 210) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 209 && transcurridominutos < 225) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 224 && transcurridominutos < 239) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 179 && cant < 240) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+            } else if (transcurridominutos > 239 && transcurridominutos < 300) {
+                transcurridohoras += 4;
+
+                if (transcurridominutos > 254 && transcurridominutos < 270) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 269 && transcurridominutos < 285) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 284 && transcurridominutos < 300) {
+                    transcurridominutos = "45";
+                } else {
+                    transcurridominutos = "00";
+                }
+            } else if (transcurridominutos > 299 && transcurridominutos < 360) {
+                transcurridohoras += 5;
+
+                if (transcurridominutos > 314 && transcurridominutos < 330) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 329 && transcurridominutos < 345) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 344 && transcurridominutos < 360) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 239 && cant < 300) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 359 && transcurridominutos < 420) {
+                transcurridohoras += 6;
+
+                if (transcurridominutos > 374 && transcurridominutos < 390) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 389 && transcurridominutos < 405) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 404 && transcurridominutos < 420) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 359 && cant > 59 && cant < 420) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 419 && transcurridominutos < 480) {
+                transcurridohoras += 7;
+
+                if (transcurridominutos > 434 && transcurridominutos < 450) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 449 && transcurridominutos < 465) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 464 && transcurridominutos < 480) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 419 && cant > 59 && cant < 480) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 479 && transcurridominutos < 540) {
+                transcurridohoras += 8;
+
+                if (transcurridominutos > 494 && transcurridominutos < 510) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 509 && transcurridominutos < 525) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 524 && transcurridominutos < 540) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 479 && cant > 59 && cant < 540) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            }
+
+
+
+            horas = transcurridohoras.toString();
+            minutos = transcurridominutos.toString();
+
+            if (horas.length < 2) {
+                horas = "0" + horas;
+            }
+
+            if (minutos.length < 2) {
+                minutos = "0" + minutos;
+            }
+
+            document.getElementById("horafinadd").value = horas + ":" + minutos;
+        }
+
+        //------------------------------------------------------------RESTA
+
+        function resta() {
+            if (cant < 16) {
+
+            } else {
+                cant -= 15;
+            }
+
+            document.getElementById("cantidadminutosadd").value = cant
+            //total()
+
+            //----------------------------------------------------------------------
+
+            var costopack = parseFloat(document.getElementById("costoadd").value);
+            var valor = parseFloat(document.getElementById("costopa").value);
+
+            if (costopack < (valor+1)) {
+
+            } else {
+                c1 = parseFloat(document.getElementById("costopa").value);
+                costopack = costopack - c1;
+                document.getElementById("costoadd").value = costopack;
+            }
+
+            //----------------------------------------------------------------------
+
+
+            inicio = document.getElementById("horainicioadd").value;
+            fin = document.getElementById("horafinadd").value;
+
+            iniciohoras = parseInt(inicio.substring(0, 2));
+            iniciominutos = parseInt(inicio.substring(3, 5));
+
+            finhoras = parseInt(fin.substring(0, 2));
+            finminutos = parseInt(fin.substring(3, 2));
+
+
+
+            transcurridohoras = iniciohoras;
+            transcurridominutos = cant;
+            //alert(transcurridominutos);
+
+            if (iniciominutos > 0) {
+                transcurridominutos = cant + iniciominutos;
+            } else {
+                transcurridominutos = cant;
+            }
+
+
+            if (transcurridominutos > 59 && transcurridominutos < 120) {
+                transcurridohoras += 1;
+
+                if (transcurridominutos > 74 && transcurridominutos < 90) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 89 && transcurridominutos < 105) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 104 && transcurridominutos < 120) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 59 && cant < 120) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+
+
+            } else if (transcurridominutos > 119 && transcurridominutos < 180) {
+                transcurridohoras += 2;
+
+                if (transcurridominutos > 134 && transcurridominutos < 150) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 149 && transcurridominutos < 165) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 164 && transcurridominutos < 180) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 119 && cant < 180) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+            } else if (transcurridominutos > 179 && transcurridominutos < 240) {
+                transcurridohoras += 3;
+
+                if (transcurridominutos > 194 && transcurridominutos < 210) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 209 && transcurridominutos < 225) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 224 && transcurridominutos < 239) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 179 && cant < 240) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+
+            } else if (transcurridominutos > 239 && transcurridominutos < 300) {
+                transcurridohoras += 4;
+
+                if (transcurridominutos > 254 && transcurridominutos < 270) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 269 && transcurridominutos < 285) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 284 && transcurridominutos < 300) {
+                    transcurridominutos = "45";
+                } else {
+                    transcurridominutos = "00";
+                }
+            } else if (transcurridominutos > 299 && transcurridominutos < 360) {
+                transcurridohoras += 5;
+
+                if (transcurridominutos > 314 && transcurridominutos < 330) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 329 && transcurridominutos < 345) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 344 && transcurridominutos < 360) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 0 && cant > 239 && cant < 300) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 359 && transcurridominutos < 420) {
+                transcurridohoras += 6;
+
+                if (transcurridominutos > 374 && transcurridominutos < 390) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 389 && transcurridominutos < 405) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 404 && transcurridominutos < 420) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 359 && cant > 59 && cant < 420) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 419 && transcurridominutos < 480) {
+                transcurridohoras += 7;
+
+                if (transcurridominutos > 434 && transcurridominutos < 450) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 449 && transcurridominutos < 465) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 464 && transcurridominutos < 480) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 419 && cant > 59 && cant < 480) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            } else if (transcurridominutos > 479 && transcurridominutos < 540) {
+                transcurridohoras += 8;
+
+                if (transcurridominutos > 494 && transcurridominutos < 510) {
+                    transcurridominutos = "15";
+                } else if (transcurridominutos > 509 && transcurridominutos < 525) {
+                    transcurridominutos = "30";
+                }
+                else if (transcurridominutos > 524 && transcurridominutos < 540) {
+                    transcurridominutos = "45";
+                } else {
+                    if (iniciominutos > 479 && cant > 59 && cant < 540) {
+                        transcurridominutos = 0 + iniciominutos;
+                    } else {
+                        transcurridominutos = "00";
+                    }
+                }
+            }
+
+
+
+            horas = transcurridohoras.toString();
+            minutos = transcurridominutos.toString();
+
+            if (horas.length < 2) {
+                horas = "0" + horas;
+            }
+
+            if (minutos.length < 2) {
+                minutos = "0" + minutos;
+            }
+
+            document.getElementById("horafinadd").value = horas + ":" + minutos;
+        }
+
+
+
+//MODAL DE EDITAR ----------------------------------------------------------------
+
+        function total1edit() {
+            var horaini = document.getElementById("horainicio").value
+
+            var suma = parseInt(horaini.substring(3, 5)) + 15;
+            var hora = parseInt(horaini.substring(0, 2));
+
+            if (suma > 59) {
+                suma = "00";
+                hora = hora + 1;
+            }
+
+            ll = hora.toString();
+
+            if (ll.length < 2) {
+                hora = "0" + hora;
+            }
+
+            document.getElementById("horafin").value = hora + ":" + suma;
+
+        }
+
+
+
+        
+
+        function sumaedit() {
+            var cant = parseFloat(document.getElementById("cantidadminutos").value);
+
+            document.getElementById("cantidadminutos").value = cant + 15;
+
+            //COSTO----------------------------------------------------------------------
+
+            var costopack = parseFloat(document.getElementById("costoid").value);
+
+            c1 = parseFloat(document.getElementById("costopack").value);
+            costopack = costopack + c1;
+            document.getElementById("costoid").value = costopack;
+
+            //----------------------------------------------------------------------
+
+
+            inicio = document.getElementById("horainicio").value;
+            fin = document.getElementById("horafin").value;
+
+            iniciohoras = parseInt(inicio.substring(0, 2));
+            finhoras = parseInt(fin.substring(0, 2));
+
+            iniciominutos = parseInt(inicio.substring(3, 5));
+            finminutos = parseInt(fin.substring(3, 5));
+
+
+            transcurridohoras = finhoras;
+            transcurridominutos = finminutos + 15;
+
+            if (transcurridominutos > 59) {
+                transcurridominutos = "00";
+                transcurridohoras = finhoras + 1;
+            }
+
+
+            horas = transcurridohoras.toString();
+            minutos = transcurridominutos.toString();
+
+            if (horas.length < 2) {
+                horas = "0" + horas;
+            }
+
+            if (minutos.length < 2) {
+                minutos = "0" + minutos;
+            }
+
+            document.getElementById("horafin").value = horas + ":" + minutos;
+        }
+
+
+
+
+        function restaedit() {
+
+            var cant = parseFloat(document.getElementById("cantidadminutos").value);
+
+            if (cant < 16) {
+
+            } else {
+                document.getElementById("cantidadminutos").value = cant - 15;
+            }
+
+
+            //COSTO----------------------------------------------------------------------
+
+            var costopack = parseFloat(document.getElementById("costoid").value);
+            var valor = parseFloat(document.getElementById("costopack").value);
+
+            if (costopack < (valor + 1)) {
+
+            } else {
+                c1 = parseFloat(document.getElementById("costopack").value);
+                costopack = costopack - c1;
+                document.getElementById("costoid").value = costopack;
+            }
+
+            //----------------------------------------------------------------------
+
+
+
+            inicio = document.getElementById("horainicio").value;
+            fin = document.getElementById("horafin").value;
+
+            iniciohoras = parseInt(inicio.substring(0, 2));
+            finhoras = parseInt(fin.substring(0, 2));
+
+            iniciominutos = parseInt(inicio.substring(3, 5));
+            finminutos = parseInt(fin.substring(3, 5));
+
+
+            if (cant < 16) {
+                
+            } else {
+                transcurridohoras = finhoras;
+                transcurridominutos = finminutos - 15;
+
+                if (transcurridominutos < 0) {
+                    transcurridominutos = "45";
+                    transcurridohoras = finhoras - 1;
+                }
+            }
+            
+            
+
+
+            horas = transcurridohoras.toString();
+            minutos = transcurridominutos.toString();
+
+            if (horas.length < 2) {
+                horas = "0" + horas;
+            }
+
+            if (minutos.length < 2) {
+                minutos = "0" + minutos;
+            }
+
+            document.getElementById("horafin").value = horas + ":" + minutos;
+        }
+
+        function total() {
+            var costopack = document.getElementById("costopa").value
+            costopack = parseFloat(costopack);
+            document.getElementById("costoadd").value = cant * costopack
+        }
+
+        function total11() {
+            var costopack = document.getElementById("costopack").value
+            costopack = parseFloat(costopack);
+            document.getElementById("costoid").value = cant * costopack
+        }
+    </script>
+
+
+    <div class="modal fade" id="agregarreserva" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Reserva</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Nuevo", "Reservas", FormMethod.Post))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha:</label>
+                                    <input type="date" name="fecha" id="fechaadd" class="form-control" placeholder="Fecha" required="">
+                                </div>
+                                <br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Hora Inicio:</label>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <label for="my-input">Hora</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-2">   </div>
+
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <label for="my-input">Minutos</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <input readonly type="text" name="sumahorasi" id="sumahorasi" class="form-control" value="1" required="">
+                                        </div>
+                                        <div class="col col-md-2"> - </div>
+
+                                        <div class=" col col-md-2">
+                                            <input readonly type="text" name="sumaminutosi" id="sumaminutosi" value="00" class="form-control" required="">
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <button onclick="sumahora()" class="btn btn-primary" type="button">+</button>
+                                                <button onclick="restahora()" class="btn btn-primary" type="button">-</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-2">   </div>
+
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <button onclick="sumaminutos()" class="btn btn-primary" type="button">+</button>
+                                                <button onclick="restaminutos()" class="btn btn-primary" type="button">-</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+
+
+                                    <input type="hidden" onkeydown="total1()" onkeyup="total1()" name="horainicio" id="horainicioadd" class="form-control" placeholder="Hora de Inicio" required="">
+                                </div>
+                                <br /><br /><br /><br /><br /><br /><br /><br />
+                                
+
+                                <div class="col col-md-12">
+
+                                    <label for="my-input">Cantidad de Minutos:</label>
+                                    <input type="number" name="cantidadminutos" id="cantidadminutosadd" class="form-control" placeholder="Cantidad de minutos" required="" value="15" readonly>
+                                    <br />
+                                    <button onclick="suma()" class="btn btn-primary" type="button">+</button>
+                                    <button onclick="resta()" class="btn btn-primary" type="button">-</button>
+
+                                </div>
+                                <br /><br /><br /><br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Hora Fin:</label>
+                                    <input type="time" name="horafin" id="horafinadd" class="form-control" placeholder="Hora Fin" required="" readonly>
+                                </div>
+                                <br /><br /><br /><br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Costo:</label>
+                                    <input type="number" name="costo" id="costoadd" class="form-control" placeholder="Costo" readonly required="">
+                                </div>
+                                <br /><br /><br /><br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Linea de Tiro:</label>
+                                    @Html.DropDownList("idlineatiro", items, new { @class = "form-control", @required = "required" })
+
+
+                                    @Html.DropDownList("costopa", items1, new { @class = "form-control", @required = "required", style = "display: none;" })
+
+
+                                </div>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editarreserva" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Reservas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Editar", "Reservas", FormMethod.Post))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <input type="hidden" name="idactualiza" id="idactualiza" class="form-control" placeholder="ID" required="" readonly="">
+
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Fecha:</label>
+                                    <input type="date" name="fecha" id="fecha" class="form-control" placeholder="Fecha" required="">
+                                </div>
+                                <br /><br /><br />
+                                <br />
+
+                                <div class="col col-md-12">
+                                    <label for="my-input">Hora Inicio:</label>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <label for="my-input">Hora</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-2">   </div>
+
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <label for="my-input">Minutos</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <input readonly type="text" name="sumahorasi" id="sumahorasiact" class="form-control" value="1" required="">
+                                        </div>
+                                        <div class="col col-md-2"> - </div>
+
+                                        <div class=" col col-md-2">
+                                            <input readonly type="text" name="sumaminutosi" id="sumaminutosiact" value="00" class="form-control" required="">
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col col-md-3"></div>
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <button onclick="sumahoraact()" class="btn btn-primary" type="button">+</button>
+                                                <button onclick="restahoraact()" class="btn btn-primary" type="button">-</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-2">   </div>
+
+                                        <div class=" col col-md-2">
+                                            <div class="row">
+                                                <button onclick="sumaminutosact()" class="btn btn-primary" type="button">+</button>
+                                                <button onclick="restaminutosact()" class="btn btn-primary" type="button">-</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col col-md-3"></div>
+                                    </div>
+
+
+
+                                    <input type="hidden" onkeydown="total1edit()" onkeyup="total1edit()" name="horainicio" id="horainicio" class="form-control" placeholder="Hora de Inicio" required="">
+                                </div>
+
+                                <br /><br /><br /><br /><br /><br /><br />
+                                
+                                <div class="col col-md-12">
+
+                                    <label for="my-input">Cantidad de Minutos:</label>
+                                    <input type="number" name="cantidadminutos" id="cantidadminutos" class="form-control" placeholder="Cantidad de minutos" required="" value="15" readonly>
+                                    <br />
+                                    <button onclick="sumaedit()" class="btn btn-primary" type="button">+</button>
+                                    <button onclick="restaedit()" class="btn btn-primary" type="button">-</button>
+
+                                </div>
+                                <br /><br /><br /><br /><br /><br />
+                                <br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Hora Fin:</label>
+                                    <input type="time" name="horafin" id="horafin" class="form-control" placeholder="Hora Fin" required="" readonly>
+                                </div>
+                                <br /><br /><br /><br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Costo:</label>
+                                    <input type="number" name="costo" id="costoid" class="form-control" placeholder="Costo" readonly required="">
+                                </div>
+                                <br /><br /><br /><br />
+                                <div class="col col-md-12">
+                                    <label for="my-input">Linea de Tiro:</label>
+                                    @Html.DropDownList("idlineatiroact", items, new { @class = "form-control", @required = "required" })
+
+                                    <input type="hidden" name="costopack" id="costopack" class="form-control" placeholder="Costo" readonly>
+                                </div>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <input type="submit" value="Guardar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="eliminarreserva" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Eliminar Reserva</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @using (Html.BeginForm("Eliminar", "Reservas", FormMethod.Get))
+                    {
+
+                        <div class="row">
+                            <center>
+                                <input type="hidden" name="idelimina" id="idelimina" class="form-control" placeholder="ID" required="" readonly="">
+
+                                <h2>¿Está Seguro de eliminar la reserva?</h2>
+                            </center>
+                        </div>
+
+                        <br />
+
+                        <div class="row" style="text-align: center;">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input type="submit" value="Aceptar" class="btn btn-primary" />
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
